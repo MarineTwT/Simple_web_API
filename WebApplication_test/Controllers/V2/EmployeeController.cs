@@ -5,10 +5,11 @@ using WebAPI.Application.ViewModels;
 using WebAPI.Domains.DTOs;
 using WebAPI.Domains.Model.EmployeeAggregate;
 
-namespace WebApplication_test.Controllers
+namespace WebAPI.Controllers.V2
 {
     [ApiController]
-    [Route("api/v1/employee")]
+    [Route("api/v{version:apiVersion}/employee")]
+    [ApiVersion("2.0")]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
@@ -26,7 +27,7 @@ namespace WebApplication_test.Controllers
         [HttpPost]
         public IActionResult Add([FromForm] EmployeeViewModel employeeView)
         {
-            var filepath = Path.Combine("Storage",employeeView.Photo.FileName);
+            var filepath = Path.Combine("Storage", employeeView.Photo.FileName);
 
             using Stream filestream = new FileStream(filepath, FileMode.Create);
             employeeView.Photo.CopyTo(filestream);
@@ -56,7 +57,7 @@ namespace WebApplication_test.Controllers
             var employee = _employeeRepository.Get(pageNumber, pageQuantity);
 
             //_logger.LogInformation("Teste");
-            
+
             return Ok(employee);
         }
 
