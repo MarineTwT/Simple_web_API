@@ -76,6 +76,17 @@ namespace WebApplication_test
             builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "MyPolicy",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:8080")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                    });
+            });
+
             var key = Encoding.ASCII.GetBytes(WebAPI.Key.Secret);
 
             builder.Services.AddAuthentication(x =>
@@ -117,6 +128,7 @@ namespace WebApplication_test
                 app.UseExceptionHandler("/error");
             }
 
+            app.UseCors("MyPolicy");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
